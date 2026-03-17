@@ -1,6 +1,7 @@
 import PlaceCardsList from './components/place-card';
 import Logo from '../../components/logo/logo';
 
+// число предложений
 type MainPageType = {
   offers: number;
 }

@@ -1,6 +1,47 @@
 import Logo from '../../components/logo/logo';
+import {OfferType} from '../../components/const';
+import { CityList } from '../../components/const';
 
-function Favorites(): JSX.Element {
+type FavoritesType = { offers: OfferType[]};
+
+// const FavoriteLocationItem = ({offers}) => {};
+// const FavoritePlaces = () => {};
+// const FavoriteLocatin = () => {};
+
+const FavoriteList = ({ offers }: FavoritesType) => {
+// собрали в массив все любимые места
+  const favorites: OfferType[] = offers.filter((offer) => offer.isFavorite === true);
+  // массив объектов с указанием города и массива его мест
+  const favoriteOffersByCities : {cityName: string; favoritePlaces: OfferType[]}[] = [];
+  // если массив полон, то создаем массив объектов
+  if (favorites.length) {
+    Object.values(CityList).forEach((cityName: string) => {
+
+      const favoritePlacesInTheCity = favorites.filter((offer: OfferType) => offer.city.name === cityName);
+      // если в готоде есть любимое место, тогда добавляем в массив
+      if (favoritePlacesInTheCity.length) {
+        favoriteOffersByCities.push({
+          cityName: cityName,
+          favoritePlaces: favoritePlacesInTheCity,
+        });
+      }
+    });
+  }
+
+
+  (
+    <li className='favorites__locations-items'>
+      {/* {
+        offers.filter((offer) => offer.isFavorite === true).
+        < FavoriteLocationItem offers={offers}/>
+      } */}
+    </li>
+  );
+};
+
+
+function Favorites({offers} : FavoritesType): JSX.Element {
+
   return (
     <div className='page'>
       <header className='header'>
@@ -47,6 +88,7 @@ function Favorites(): JSX.Element {
                   </div>
                 </div>
                 <div className='favorites__places'>
+
                   <article className='favorites__card place-card'>
                     <div className='place-card__mark'>
                       <span>Premium</span>
@@ -144,6 +186,7 @@ function Favorites(): JSX.Element {
                   </article>
                 </div>
               </li>
+
               <li className='favorites__locations-items'>
                 <div className='favorites__locations locations locations--current'>
                   <div className='locations__item'>
@@ -201,6 +244,7 @@ function Favorites(): JSX.Element {
                   </article>
                 </div>
               </li>
+
             </ul>
           </section>
         </div>

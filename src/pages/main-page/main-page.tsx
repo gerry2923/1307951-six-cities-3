@@ -1,12 +1,14 @@
-import PlaceCardsList from './components/place-card';
+import PlaceCardsList from './components/place-card-list';
 import Logo from '../../components/logo/logo';
+import {OffersListType} from '../../components/const.ts';
 
-// число предложений
+
 type MainPageType = {
-  offers: number;
+  offersNumber: number;
+  offersList1: OffersListType;
 }
 
-function MainPage({offers} : MainPageType): JSX.Element {
+function MainPage({offersNumber, offersList1} : MainPageType): JSX.Element {
   return (
     <div className='page page--gray page--main'>
       <header className='header'>
@@ -81,7 +83,7 @@ function MainPage({offers} : MainPageType): JSX.Element {
           <div className='cities__places-container container'>
             <section className='cities__places places'>
               <h2 className='visually-hidden'>Places</h2>
-              <b className='places__found'>{offers} places to stay in Amsterdam</b>
+              <b className='places__found'>{offersNumber} places to stay in Amsterdam</b>
               <form className='places__sorting' action='#' method='get'>
                 <span className='places__sorting-caption'>Sort by</span>
                 <span className='places__sorting-type' tabIndex={0}>
@@ -108,7 +110,7 @@ function MainPage({offers} : MainPageType): JSX.Element {
                   </li>
                 </ul>
               </form>
-              <PlaceCardsList />
+              <PlaceCardsList {...offersList1}/>
             </section>
             <div className='cities__right-section'>
               <section className='cities__map map' />

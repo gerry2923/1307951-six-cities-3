@@ -1,26 +1,50 @@
-import { placeCardsInfo } from '../../../components/const.ts';
+import { OfferType } from '../../../components/const.ts';
+import { useState } from 'react';
 
-type PlaceCardType = {
-  src: string;
-  price: string;
+
+// в состояние активная карточка с предложением id Событие навести курсор
+function Premium(): JSX.Element {
+  return (<div className="place-card__mark"><span>Premium</span></div>);
 }
 
-function PlaceCard({src, price}: PlaceCardType): JSX.Element {
+function PlaceCard(card: OfferType): JSX.Element {
+  const [isActiveCard, setActiveCardClass] = useState(false);
+
   return (
-    <article className="cities__card place-card">
+    < article className = {
+      `cities__card place-card ${isActiveCard ? 'place-card__bookmark-button--active' : ''}`
+    }
+    onMouseOver = {
+      (e) => {
+        // console.log('onMouseOver');
+        e.preventDefault();
+        setActiveCardClass(true);
+      }
+    }
+    onMouseLeave = {
+      (e) => {
+        e.preventDefault();
+        // console.log('onMouseLeave');
+        setActiveCardClass(false);
+      }
+    }
+    >
+
+      {card.isPremium ? <Premium /> : ''}
       <div className="cities__image-wrapper place-card__image-wrapper">
         <a href="#">
-          <img className="place-card__image" src={src} width="260" height="200" alt="Place image" />
+          <img className="place-card__image" src={card.previewImage} width="260" height="200" alt="Place image" />
         </a>
       </div>
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
-            <b className="place-card__price-value">&euro;{price}</b>
+            <b className="place-card__price-value">{card.price} &euro;</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button className="place-card__bookmark-button button" type="button">
             <svg className="place-card__bookmark-icon" width={18} height={19}>
+
               <use xlinkHref="#icon-bookmark"></use>
             </svg>
             <span className="visually-hidden">To bookmarks</span>
@@ -28,34 +52,18 @@ function PlaceCard({src, price}: PlaceCardType): JSX.Element {
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: '80%' }}></span>
+            <span style={{ width: `${card.rating * 20}%` }}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="#">Canal View Prinsengracht</a>
+          <a href="#">{card.title}</a>
         </h2>
-        <p className="place-card__type">Apartment</p>
+        <p className="place-card__type">{card.type}</p>
       </div>
     </article>
   );
 }
 
 
-// function PlaceCardsList(): JSX.Element {
-//   return (
-//     <div className="cities__places-list places__list tabs__content">
-//       {placeCardsInfo.map((info) => <PlaceCard src={info.src} price={info.price} key={info.id} />)}
-
-//     </div>);
-// }
-
-const PlaceCardsList = (): JSX.Element =>
-  (
-    <div className="cities__places-list places__list tabs__content">
-      {placeCardsInfo.map((info) => <PlaceCard src={info.src} price={info.price} key={info.id} />)}
-    </div>
-  );
-
-
-export default PlaceCardsList;
+export default PlaceCard;

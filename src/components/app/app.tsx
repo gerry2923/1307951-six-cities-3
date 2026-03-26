@@ -7,8 +7,14 @@ import { ErrorPage } from '../../pages/error-page/error-page.tsx';
 import Login from '../../pages/login/login.tsx';
 import {HelmetProvider} from 'react-helmet-async';
 import Offer from '../../pages/offer/offer.tsx';
+import {OffersListType} from '../const.ts';
 
-function App(): JSX.Element {
+
+type AppType = {
+  offers: OffersListType;
+}
+
+function App({offers}:AppType): JSX.Element {
   // return (<MainPage offers={NumberOfOffers.offers}/>);
   return (
 
@@ -17,7 +23,7 @@ function App(): JSX.Element {
         <Routes>
           <Route
             path={AppRoute.Main}
-            element={<MainPage offers={NumberOfOffers.offers} />}
+            element={<MainPage offersNumber={NumberOfOffers.offers} offersList1={offers}/>}
           />
           <Route
             path={AppRoute.Login}
@@ -27,7 +33,7 @@ function App(): JSX.Element {
             path={AppRoute.Favorites}
             element={
               <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
-                <Favorites/>
+                <Favorites offers={offers.offersList2}/>
               </PrivateRoute>
             }
           />

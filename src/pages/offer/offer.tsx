@@ -1,8 +1,8 @@
 import { GoodIdType, ImageIdType, OfferDetailedType } from '../../components/const';
 import { Header } from '../../components/header/header';
-import { Error } from '../error/error';
+// import { Error } from '../error/error';
 import { ReviewFormComponent } from '../../components/comment-form/review-form-component';
-import { useParams } from 'react-router';
+import { Navigate, useParams } from 'react-router';
 import { ImageList } from '../../components/image/image-list';
 import { GoodList } from '../../components/good/good-list';
 import { Premium } from '../../components/premium/premium';
@@ -15,7 +15,8 @@ const Offer = ({offers}: {offers: OfferDetailedType[]}): JSX.Element => {
   const offer : OfferDetailedType | undefined = offers.find((offerItem) => offerItem.id === id?.substring(1));
 
   if (!offer) {
-    return <Error />;
+    return <Navigate to={'*'} />;
+    // return <Error />;
   }
 
   let imageList = offer.images.map((image, index) : ImageIdType => ({id: index.toString(), picture: image}));

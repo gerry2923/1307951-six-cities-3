@@ -46,8 +46,73 @@ export type OfferType = {
   isFavorite: boolean;
   isPremium: boolean;
   rating: number;
-  previewImage: string;
+  previewImage: UrlType;
 };
 
+export type OffersType = { offers: OfferType[]};
 
-export type OffersListType = { offersList2: OfferType[]};
+type HostType = {
+  name: string;
+  avatarUrl: UrlType;
+  isPro: boolean;
+};
+
+export type UrlType = string;
+
+type GoodType = 'Wifi'| 'Heating'| 'Kitchen'| 'Fridge' | 'Washing machine' | 'Coffee machine' | 'Dishwasher' | 'Towels' | 'Baby seat' | 'Cabel TV';
+
+type GoodsType = GoodType[];
+
+export type ImagesType = UrlType[];
+
+export type OfferDetailedType = {
+  id: string;
+  title: string;
+  type: 'apartment' | 'house' | 'room' | 'hotel';
+  price: number;
+  city: CityType;
+  location: CityLocationType;
+  isFavorite: boolean;
+  isPremium: boolean;
+  rating: number;
+  previewImage: UrlType;
+  description: string;
+  bedrooms: number;
+  goods: GoodsType;
+  host: HostType;
+  images: ImagesType;
+  maxAdults: number;
+
+};
+
+export type FavoriteDataType = {
+  id: number;
+  cityName: string;
+  favorites: OfferType[];
+}
+
+export type UserType = {
+  name: string;
+  avatarUrl: UrlType;
+  isPro: boolean;
+};
+
+export type Comment = {
+  id: string;
+  date: string;
+  user: UserType;
+  comment: string;
+  rating: number;
+};
+
+export type Comments = Comment[];
+
+export type GoodIdType = {
+  id: string;
+  good: string;
+}
+
+export type ImageIdType = {
+  id: string;
+  picture: UrlType;
+}

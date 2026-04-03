@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './components/app/app';
+import {App} from './components/app/app';
 import {offers} from './mocks/offers';
 
 const root = ReactDOM.createRoot(
@@ -10,6 +10,6 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App offers={{offersList2: offers}}/>
+    <App offers={offers}/>
   </React.StrictMode>
 );

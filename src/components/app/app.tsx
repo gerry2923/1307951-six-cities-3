@@ -1,55 +1,54 @@
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import MainPage from '../../pages/main-page/main-page.tsx';
-import Favorites from '../../pages/favorites/favorites.tsx';
-import { NumberOfOffers, AppRoute, AuthorizationStatus } from '../const.ts';
-import PrivateRoute from '../private-route/private-route.tsx';
-import { ErrorPage } from '../../pages/error-page/error-page.tsx';
-import Login from '../../pages/login/login.tsx';
-import {HelmetProvider} from 'react-helmet-async';
-import Offer from '../../pages/offer/offer.tsx';
-import {OffersListType} from '../const.ts';
-import {offers as allOffers} from '../../mocks/offers.ts';
+import { Main } from '../../pages/main/main.tsx';
+import { Favorites } from '../../pages/favorites/favorites.tsx';
+import { AppRoute, AuthorizationStatus } from '../const.ts';
+import { PrivateRoute } from '../private-route/private-route.tsx';
+import { Error } from '../../pages/error/error.tsx';
+import { Login } from '../../pages/login/login.tsx';
+import { HelmetProvider } from 'react-helmet-async';
+import { OffersType } from '../const.ts';
+import { offersDetailed } from '../../mocks/offers-detailed.ts';
+import { Offer } from '../../pages/offer/offer.tsx';
 
 
-type AppType = {
-  offers: OffersListType;
-}
+const App = ({offers}:OffersType): JSX.Element => (
 
-function App({offers}:AppType): JSX.Element {
-  return (
+  <HelmetProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path={AppRoute.Main}
+          element={<Main offers={offers} />}
+        />
+        <Route
+          path={AppRoute.Login}
+          element={<Login />}
+        />
+        <Route
+          path={AppRoute.Favorites}
+          element={
 
-    <HelmetProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path={AppRoute.Main}
-            element={<MainPage offersNumber={NumberOfOffers.offers} offersList1={offers}/>}
-          />
-          <Route
-            path={AppRoute.Login}
-            element={<Login />}
-          />
-          <Route
-            path={AppRoute.Favorites}
-            element={
-              // <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
-              <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
-                <Favorites offers={offers.offersList2}/>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path={`${AppRoute.Offer}id`}
-            element={<Offer offers={allOffers}/>}
-          />
-          <Route
-            path="*"
-            element={<ErrorPage />}
-          />
-        </Routes>
-      </BrowserRouter>
-    </HelmetProvider>
-  );
-}
+            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
+              <Favorites offers={offers} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={`${AppRoute.Offer}id`}
+          element={
+            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth} >
+              <Offer offers={offersDetailed} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="*"
+          element={<Error />}
+        />
+      </Routes>
+    </BrowserRouter>
+  </HelmetProvider>
+);
 
-export default App;
+
+export {App};

@@ -133,3 +133,5 @@ export type MapRefType = {
   mapRef: React.RefObject<HTMLElement>;
   city: MapCityType;
 };
+
+export const DEFAULT_CITY = 'Amsterdam';

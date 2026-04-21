@@ -4,3 +4,8 @@ export const CITY = {
   lng: 4.88969,
   zoom: 10,
 };
+
+export const cities = [
+  {},
+
+];

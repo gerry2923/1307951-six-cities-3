@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT, OfferType } from '../const';
 
 type MapType = {
-  city: string;
+  city: string | undefined;
   offers: OfferType[];
   activeOfferId?: string | null;
   onMarkerHover?: (activeOffer: OfferType | undefined) => void ;

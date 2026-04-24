@@ -2,7 +2,10 @@ import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/store.ts';
 import { useDispatch } from 'react-redux';
 import { AppRoute } from '../const';
-import { setCity } from '../../store/reducer.ts';
+import { offersAction } from '../../store/slices/offers.ts';
+import { selectCity } from '../../store/selectors/selectors.ts';
+// import { setCity } from '../../store/reducer.ts';
+// import { setCity } from '../../store/action._ts';
 
 type LocationTabType = {
   cityName: string;
@@ -11,7 +14,7 @@ type LocationTabType = {
 const LocationTab = ({ cityName }: LocationTabType): JSX.Element => {
   // импорт офферов из хранилища
   // const offers = useAppSelector((state) => state.offers);
-  const currentCity = useAppSelector((state) => state.city);
+  const currentCity = useAppSelector(selectCity);
   const dispatch = useDispatch();
 
   // const currentOffers = offers.filter((offer) => offer.city.name === currentCity);
@@ -24,7 +27,8 @@ const LocationTab = ({ cityName }: LocationTabType): JSX.Element => {
         className={`locations__item-link tabs__item ${currentCity === cityName ? 'tabs__item--active' : ''} `}
         onClick={(evt) => {
           evt.preventDefault();
-          dispatch(setCity(cityName));
+          // dispatch(setCity(cityName));
+          dispatch(offersAction.setCity(cityName));
         }}
         to={AppRoute.Main}
       >

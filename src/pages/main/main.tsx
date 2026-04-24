@@ -12,6 +12,7 @@ import { useDocumentTitle } from '../../hooks/use-document-title.ts';
 import { useAppSelector } from '../../hooks/store.ts';
 // import { useDispatch } from 'react-redux';
 import { LocationTabs } from '../../components/location-tabs/locationTabs.tsx';
+import { selectCity, selectOffers } from '../../store/selectors/selectors.ts';
 
 
 // type MainType = {
@@ -24,8 +25,8 @@ const Main = (): JSX.Element => {
 
   // импорт офферов из хранилища
   // !!! РЕАЛИЗАЦИЯ: при нажатии на таб, нужно изменить значение cureentOffers в зависимости от таба !!!
-  const offers = useAppSelector((state) => state.offers);
-  const currentCity = useAppSelector((state) => state.city);
+  const offers = useAppSelector(selectOffers);
+  const currentCity = useAppSelector(selectCity);
   // const dispatch = useDispatch();
 
   const currentOffers = offers.filter((offer) => offer.city.name === currentCity);

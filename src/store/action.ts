@@ -1,3 +1,3 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const changeCityAction = createAction('main/changeCity');
+export const setCity = createAction('main/setCity');

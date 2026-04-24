@@ -1,11 +1,13 @@
 import { Header } from '../../components/header/header';
 import { FavoriteList } from './favoirte-list';
-import {OfferType} from '../../components/const';
+// import { OfferType } from '../../components/const';
 
-type FavoritesType = { offers: OfferType[]};
+import { offers } from '../../mocks/offers';
+
+// type FavoritesType = { offers: OfferType[]};
 
 // !!! предполагаем, что сюда попадают только избранные предложения !!!
-const Favorites = ({ offers }: FavoritesType): JSX.Element =>
+const Favorites = (): JSX.Element =>
   (
     <div className='page'>
       <Header />

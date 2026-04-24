@@ -2,10 +2,10 @@ import { useRef, useEffect } from 'react';
 import { useMap } from '../../hooks/use-map';
 import leaflet, { LeafletMouseEvent } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT, MapCityType, OfferType } from '../const';
+import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT, OfferType } from '../const';
 
 type MapType = {
-  city: MapCityType;
+  city: string;
   offers: OfferType[];
   activeOfferId?: string | null;
   onMarkerHover?: (activeOffer: OfferType | undefined) => void ;
@@ -41,6 +41,8 @@ const Map = ({ city, offers, activeOfferId, onMarkerHover }: MapType): JSX.Eleme
   };
 
   useEffect(() => {
+  // добавить reset карты
+
     if (map) {
       offers.forEach((offer) => {
         leaflet
@@ -54,7 +56,7 @@ const Map = ({ city, offers, activeOfferId, onMarkerHover }: MapType): JSX.Eleme
 
       });
     }
-  }, [activeOfferId]);
+  }, [activeOfferId, map, offers]);
 
   return (
     <section

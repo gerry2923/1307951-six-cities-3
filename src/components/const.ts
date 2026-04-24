@@ -30,10 +30,14 @@ export type CityLocationType = {
   zoom: number;
 };
 
-export type CityType = {
+export interface CityType {
   name: string;
   location: CityLocationType;
-};
+}
+
+export interface CityWithIdType extends CityType {
+  id: string;
+}
 
 export type OfferType = {
   id: string;
@@ -128,10 +132,16 @@ export type MapCityType = {
   zoom: number;
 };
 
+export type MapCityType_ = {
+  id: string;
+  location: {latitude: number; longitude: number; zoom: number};
+  name: string;
+}
 
 export type MapRefType = {
   mapRef: React.RefObject<HTMLElement>;
-  city: MapCityType;
+  // city: CityWithIdType;
+  city: string;
 };
 
 export const DEFAULT_CITY = 'Amsterdam';

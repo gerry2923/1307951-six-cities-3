@@ -4,21 +4,39 @@ import { OfferType } from '../../components/const.ts';
 import { CardList } from '../../components/cards/card-list.tsx';
 
 import { NumberOfOffers } from '../../components/const.ts';
-import { CITY } from '../../mocks/city.ts';
+// import { CITY } from '../../mocks/city.ts';
 
 import { Map } from '../../components/map/map.tsx';
+import { useDocumentTitle } from '../../hooks/use-document-title.ts';
+
+import { useAppSelector } from '../../hooks/store.ts';
+// import { useDispatch } from 'react-redux';
+import { LocationTabs } from '../../components/location-tabs/locationTabs.tsx';
 
 
-type MainType = {
-  offers: OfferType[];
-};
+// type MainType = {
+//   offers: OfferType[];
+// };
 
-const Main = ({ offers }: MainType): JSX.Element => {
+// const Main = ({ offers }: MainType): JSX.Element => {
+const Main = (): JSX.Element => {
+  useDocumentTitle('Main page');
 
+  // импорт офферов из хранилища
+  // !!! РЕАЛИЗАЦИЯ: при нажатии на таб, нужно изменить значение cureentOffers в зависимости от таба !!!
+  const offers = useAppSelector((state) => state.offers);
+  const currentCity = useAppSelector((state) => state.city);
+  // const dispatch = useDispatch();
+
+  const currentOffers = offers.filter((offer) => offer.city.name === currentCity);
+
+  const isEmpty = offers.length === 0;
+
+  // перерисовка карты и выделение соответствующего пина при наведении на один из офферов
   const [selectedPoint, setSelectedPoint] = useState('');
 
   const handleCardHover = (activeOffer: OfferType | undefined) => {
-    const currentOffer = offers.find((offer: OfferType) => offer.id === activeOffer?.id);
+    const currentOffer = currentOffers.find((offer: OfferType) => offer.id === activeOffer?.id);
 
     if (currentOffer) {
       setSelectedPoint(currentOffer.id);
@@ -27,46 +45,17 @@ const Main = ({ offers }: MainType): JSX.Element => {
   };
 
   return (
-    <div className='page page--gray page--main'>
+    <div className={`page page--gray page--main ${isEmpty ? 'page__main--index-empty' : ''}`}>
       <Logo />
       <main className='page__main page__main--index'>
         <h1 className='visually-hidden'>Cities</h1>
+
         <div className='tabs'>
           <section className='locations container'>
-            <ul className='locations__list tabs__list'>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item tabs__item--active'>
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className='locations__item'>
-                <a className='locations__item-link tabs__item' href='#'>
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
+            <LocationTabs />
           </section>
         </div>
+
         <div className='cities'>
           <div className='cities__places-container container'>
 
@@ -102,17 +91,19 @@ const Main = ({ offers }: MainType): JSX.Element => {
                 </ul>
 
               </form>
+
               {offers && offers.length > 0 &&
               <CardList
-                offers={offers}
+                offers={currentOffers}
                 onCardHover={handleCardHover}
               />}
+
             </section>
 
             <div className='cities__right-section'>
               <Map
-                city={CITY}
-                offers={offers}
+                city={currentCity}
+                offers={currentOffers}
                 activeOfferId={selectedPoint}
                 onMarkerHover={handleCardHover}
               />

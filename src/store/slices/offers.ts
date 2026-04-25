@@ -24,11 +24,17 @@ const offersSlice = createSlice({
       state.city = action.payload;
     },
   },
+  selectors: {
+    city: (state: OffersState) => state.city,
+    offers: (state: OffersState) => state.offers,
+  }
+
 });
 
 
 // потом можно использовать offersAction.reducers.setCity
 const offersAction = offersSlice.actions;
+const offersSelectors = offersSlice.selectors;
 
 // const reducer = createReducer(initialState, (builder) => {
 //   builder
@@ -39,4 +45,4 @@ const offersAction = offersSlice.actions;
 
 // export { reducer, setCity };
 
-export { offersAction, offersSlice };
+export { offersAction, offersSlice, offersSelectors };

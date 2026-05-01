@@ -2,13 +2,13 @@ import { useRef, useEffect } from 'react';
 import { useMap } from '../../hooks/use-map';
 import leaflet, { LeafletMouseEvent } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT, OfferType } from '../const';
+import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT_LOCAL, OfferType, CityWithIdType } from '../const';
 
 type MapType = {
-  city: string | undefined;
+  city: CityWithIdType | undefined;
   offers: OfferType[];
-  activeOfferId?: string | null;
-  onMarkerHover?: (activeOffer: OfferType | undefined) => void ;
+  activeOffer?: OfferType | undefined;
+  onMarkerHover?: (activeOffer: OfferType | undefined) => void;
 };
 
 const defaultCustomIcon = leaflet.icon({
@@ -18,31 +18,30 @@ const defaultCustomIcon = leaflet.icon({
 });
 
 const activeCustomIcon = leaflet.icon({
-  iconUrl: URL_MARKER_CURRENT,
-  iconSize: [40, 40],
+  iconUrl: URL_MARKER_CURRENT_LOCAL,
+  iconSize: [28, 40],
   iconAnchor: [20, 40],
 });
 
 
-const Map = ({ city, offers, activeOfferId, onMarkerHover }: MapType): JSX.Element => {
+const Map = ({ city, offers, activeOffer, onMarkerHover }: MapType): JSX.Element => {
 
   const mapRef = useRef<HTMLElement | null>(null);
   const map = useMap({ mapRef, city });
+  // const activeOffer2 = offers.find((offer) => offer.id === activeOfferId);
 
   const handleMouseOver = (e: LeafletMouseEvent) => {
     const { lat, lng } = e.latlng;
 
-    const activeOffer = offers.find((offer) =>
+    const newActiveOffer = offers.find((offer) =>
       lat === offer.city.location.latitude &&
       lng === offer.city.location.longitude);
 
-    activeOfferId = activeOffer?.id;
+    activeOffer = newActiveOffer;
     onMarkerHover?.(activeOffer);
   };
-
-  useEffect(() => {
-  // добавить reset карты
-
+  // создаем пины
+  const createPins = () => {
     if (map) {
       offers.forEach((offer) => {
         leaflet
@@ -50,13 +49,76 @@ const Map = ({ city, offers, activeOfferId, onMarkerHover }: MapType): JSX.Eleme
             lat: offer.city.location.latitude,
             lng: offer.city.location.longitude,
           }, {
-            icon: activeOfferId === offer.id ? activeCustomIcon : defaultCustomIcon,
+            icon: activeOffer?.id === offer.id ? activeCustomIcon : defaultCustomIcon,
           })
           .addTo(map).on('mouseover', handleMouseOver);
+      });
 
+    }
+  };
+  // изменяем цвет пинов
+  const changeActivPinView = () => {
+    if (map) {
+      map.eachLayer((layer) => {
+        // Ensure the layer is a marker and has coordinates
+        if (layer instanceof leaflet.Marker) {
+          const latlng = layer.getLatLng();
+          if (latlng.lat === activeOffer?.location.latitude && latlng.lng === activeOffer.location.longitude) {
+            layer.setIcon(activeCustomIcon);
+          } else {
+            layer.setIcon(defaultCustomIcon);
+          }
+        }
       });
     }
-  }, [activeOfferId, map, offers]);
+
+  };
+  // убираем лишние пины, когда изменяем город
+  const resetPins = () => {
+    if (map) {
+      map.eachLayer((pin) => {
+        if (pin instanceof leaflet.Marker) {
+          map.removeLayer(pin);
+        }
+      });
+    }
+  };
+
+  const isAnyMarkers = () => {
+    let hasMarkers = false;
+    if (map) {
+      map.eachLayer((pin) => {
+        if (pin instanceof leaflet.Marker) {
+          hasMarkers = true;
+        }
+      });
+    }
+    return hasMarkers;
+  };
+
+
+  useEffect(() => {
+    // overwritePins();
+    if(map) {
+      if(isAnyMarkers()) {
+        changeActivPinView();
+      } else {
+        createPins();
+      }
+    }
+  }, [activeOffer, map]);
+
+  useEffect(() => {
+    if (city) {
+      if(map){
+        resetPins();
+        createPins();
+        map.flyTo([city.location.latitude, city.location.longitude], city?.location.zoom);
+      }
+    }
+
+  }, [city]);
+
 
   return (
     <section

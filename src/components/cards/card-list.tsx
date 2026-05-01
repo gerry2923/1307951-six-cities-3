@@ -13,10 +13,11 @@ const CardList = ({offers, onCardHover} : CardListType): JSX.Element =>{
 
   const [activeOffer, setActiveOffer] = useState<Nullable <OfferType>>(null);
 
+  // в переменную activeOffer сохраняется тот оффер, на который навели курсором мышки
   const handleHover = (offer?: OfferType) => {
     setActiveOffer(offer || null);
   };
-
+  // при изменении активного состояния запускаем метод onCardHover с передачей ему активного оффера
   useEffect(() => {
     if(activeOffer && activeOffer.id){
       onCardHover?.(activeOffer);

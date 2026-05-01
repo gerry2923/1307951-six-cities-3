@@ -33,7 +33,7 @@ const offersSlice = createSlice({
 
 
 // потом можно использовать offersAction.reducers.setCity
-const offersAction = offersSlice.actions;
+const offersAction = offersSlice.actions; // добавляет все редюсеры. Их может быть много
 const offersSelectors = offersSlice.selectors;
 
 // const reducer = createReducer(initialState, (builder) => {

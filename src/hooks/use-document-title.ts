@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 const useDocumentTitle = (title:string) => {
   const documentDefined = typeof document !== 'undefined';
   const originalTitle = useRef(documentDefined ? document.title : null);
+  const currentTitle = originalTitle.current;
 
   useEffect(() => {
     if (!documentDefined) {
@@ -14,8 +15,8 @@ const useDocumentTitle = (title:string) => {
     }
 
     return () => {
-      if(originalTitle.current) {
-        document.title = originalTitle.current;
+      if(currentTitle) {
+        document.title = currentTitle;
       }
     };
   }, [title]);

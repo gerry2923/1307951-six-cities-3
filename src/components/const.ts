@@ -1,6 +1,6 @@
-export const NumberOfOffers = {
-  offers: 312,
-};
+// export const NumberOfOffers = {
+//   offers: 312,
+// };
 
 export const enum AppRoute {
   Main = '/',
@@ -122,17 +122,19 @@ export type ImageIdType = {
 
 export const URL_MARKER_DEFAULT = 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg';
 export const URL_MARKER_CURRENT = 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/main-pin.svg';
+
+export const URL_MARKER_CURRENT_LOCAL = '../../img/pin-active.svg';
 export const TILE_LAYER_URL_PATTERN = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 export const TILE_LAYER_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
-export type MapCityType = {
+export type MapCityType_ = {
   title: string;
   lat: number;
   lng: number;
   zoom: number;
 };
 
-export type MapCityType_ = {
+export type MapCityType = {
   id: string;
   location: {latitude: number; longitude: number; zoom: number};
   name: string;
@@ -141,7 +143,7 @@ export type MapCityType_ = {
 export type MapRefType = {
   mapRef: React.RefObject<HTMLElement>;
   // city: CityWithIdType;
-  city: string | undefined;
+  city: CityWithIdType | undefined;
 };
 
 export const DEFAULT_CITY = 'Amsterdam';

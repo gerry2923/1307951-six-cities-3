@@ -1,8 +1,8 @@
-import { OfferType } from '../components/const';
-import { CITIES, CityName } from '../mocks/city';
-import { offers } from '../mocks/offers';
+import { OfferType } from '../components/const.ts';
+import { CITIES, CityName } from '../mocks/city.ts';
+import { offers } from '../mocks/offers.ts';
 import { createReducer } from '@reduxjs/toolkit';
-import { setCity } from './action._ts';
+import { setCity } from './_action.ts';
 
 interface OffersState {
   city: CityName | undefined;

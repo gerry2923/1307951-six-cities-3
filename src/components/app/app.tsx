@@ -6,19 +6,20 @@ import { PrivateRoute } from '../private-route/private-route.tsx';
 import { Error } from '../../pages/error/error.tsx';
 import { Login } from '../../pages/login/login.tsx';
 import { HelmetProvider } from 'react-helmet-async';
-import { OffersType } from '../const.ts';
+// import { OffersType } from '../const.ts';
 import { offersDetailed } from '../../mocks/offers-detailed.ts';
 import { Offer } from '../../pages/offer/offer.tsx';
 
 
-const App = ({offers}:OffersType): JSX.Element => (
+// const App = ({offers}:OffersType): JSX.Element => (
+const App = (): JSX.Element => (
 
   <HelmetProvider>
     <BrowserRouter>
       <Routes>
         <Route
           path={AppRoute.Main}
-          element={<Main offers={offers} />}
+          element={<Main />}
         />
         <Route
           path={AppRoute.Login}
@@ -29,7 +30,7 @@ const App = ({offers}:OffersType): JSX.Element => (
           element={
 
             <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
-              <Favorites offers={offers} />
+              <Favorites />
             </PrivateRoute>
           }
         />

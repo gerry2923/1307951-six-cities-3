@@ -19,6 +19,7 @@ type CardType = {
 };
 
 const Card = ({offer, type, handleHover}:CardType):JSX.Element => {
+  // при наведении на карту, запускаем выполнение handleHover и одновременно передаем тот offer, который подсветили
   const handleMouseOn = () => {
     handleHover?.(offer);
   };

@@ -98,7 +98,6 @@ const Map = ({ city, offers, activeOffer, onMarkerHover }: MapType): JSX.Element
 
 
   useEffect(() => {
-    // overwritePins();
     if(map) {
       if(isAnyMarkers()) {
         changeActivPinView();

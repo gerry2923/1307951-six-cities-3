@@ -1,130 +1,85 @@
-import { useRef, useEffect } from 'react';
-import { useMap } from '../../hooks/use-map';
-import leaflet, { LeafletMouseEvent } from 'leaflet';
+import { useEffect, useRef } from 'react';
+import { TCity, TOffer } from '../types';
+import leaflet from 'leaflet';
+
+
 import 'leaflet/dist/leaflet.css';
-import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT_LOCAL, OfferType, CityWithIdType } from '../const';
+import useMap from '../../hooks/use-map';
+import { URL_MARKER_ACTIVE, URL_MARKER_DEFAULT } from '../const';
 
-type MapType = {
-  city: CityWithIdType | undefined;
-  offers: OfferType[];
-  activeOffer?: OfferType | undefined;
-  onMarkerHover?: (activeOffer: OfferType | undefined) => void;
-};
-
-const defaultCustomIcon = leaflet.icon({
+const defaultMarkerIcon = leaflet.icon({
   iconUrl: URL_MARKER_DEFAULT,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: [27, 39],
+  iconAnchor: [20, 20],
 });
 
-const activeCustomIcon = leaflet.icon({
-  iconUrl: URL_MARKER_CURRENT_LOCAL,
-  iconSize: [28, 40],
-  iconAnchor: [20, 40],
+const activeMarkerIcon = leaflet.icon({
+  iconUrl: URL_MARKER_ACTIVE,
+  iconSize: [27, 39],
+  iconAnchor: [20, 20],
 });
 
+type TMap = {
+  city: TCity;
+  offers: TOffer[];
+  activeOfferId?: string | null;
+  className: string;
+}
 
-const Map = ({ city, offers, activeOffer, onMarkerHover }: MapType): JSX.Element => {
 
-  const mapRef = useRef<HTMLElement | null>(null);
-  const map = useMap({ mapRef, city });
-  // const activeOffer2 = offers.find((offer) => offer.id === activeOfferId);
+function Map({ city, offers, activeOfferId, className }: TMap): JSX.Element {
+  // в эту ссылку запихиваем элемент - контейнер, в котором мы применяем ref (см ниже)
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const markersRef = useRef<leaflet.Marker[]>([]);
 
-  const handleMouseOver = (e: LeafletMouseEvent) => {
-    const { lat, lng } = e.latlng;
+  // создаем хук, который создает новый экземпляр карты
+  const map = useMap(
+    {
+      location: city?.location ?? null,
+      containerRef: mapContainerRef,
+    });
 
-    const newActiveOffer = offers.find((offer) =>
-      lat === offer.city.location.latitude &&
-      lng === offer.city.location.longitude);
-
-    activeOffer = newActiveOffer;
-    onMarkerHover?.(activeOffer);
-  };
-  // создаем пины
-  const createPins = () => {
-    if (map) {
-      offers.forEach((offer) => {
-        leaflet
-          .marker({
-            lat: offer.city.location.latitude,
-            lng: offer.city.location.longitude,
-          }, {
-            icon: activeOffer?.id === offer.id ? activeCustomIcon : defaultCustomIcon,
-          })
-          .addTo(map).on('mouseover', handleMouseOver);
-      });
-
+  useEffect(() => {
+    if (!map) {
+      return undefined;
     }
-  };
-  // изменяем цвет пинов
-  const changeActivPinView = () => {
-    if (map) {
-      map.eachLayer((layer) => {
-        // Ensure the layer is a marker and has coordinates
-        if (layer instanceof leaflet.Marker) {
-          const latlng = layer.getLatLng();
-          if (latlng.lat === activeOffer?.location.latitude && latlng.lng === activeOffer.location.longitude) {
-            layer.setIcon(activeCustomIcon);
-          } else {
-            layer.setIcon(defaultCustomIcon);
+
+    // 1) удалить старые маркеры
+    markersRef.current.forEach((marker) => marker.remove());
+    markersRef.current = [];
+
+    // 2) создать новые и СОХРАНИТЬ их
+    markersRef.current = offers.map((offer) =>
+      leaflet
+        .marker(
+          [offer.location.latitude, offer.location.longitude],
+          {
+            icon: offer.id === activeOfferId ? activeMarkerIcon : defaultMarkerIcon,
           }
-        }
-      });
-    }
+        )
+        .addTo(map)
+    );
 
-  };
-  // убираем лишние пины, когда изменяем город
-  const resetPins = () => {
-    if (map) {
-      map.eachLayer((pin) => {
-        if (pin instanceof leaflet.Marker) {
-          map.removeLayer(pin);
-        }
-      });
-    }
-  };
-
-  const isAnyMarkers = () => {
-    let hasMarkers = false;
-    if (map) {
-      map.eachLayer((pin) => {
-        if (pin instanceof leaflet.Marker) {
-          hasMarkers = true;
-        }
-      });
-    }
-    return hasMarkers;
-  };
-
+    // 3) очистка при размонтировании/пересоздании
+    return () => {
+      markersRef.current.forEach((marker) => marker.remove());
+      markersRef.current = [];
+    };
+  }, [map, offers, activeOfferId]);
 
   useEffect(() => {
-    if(map) {
-      if(isAnyMarkers()) {
-        changeActivPinView();
-      } else {
-        createPins();
-      }
-    }
-  }, [activeOffer, map]);
-
-  useEffect(() => {
-    if (city) {
-      if(map){
-        resetPins();
-        createPins();
-        map.flyTo([city.location.latitude, city.location.longitude], city?.location.zoom);
-      }
+    if (!map) {
+      return;
     }
 
-  }, [city]);
+    map.setView(
+      [city.location.latitude, city.location.longitude],
+      city.location.zoom
+    );
+  }, [map, city.location.latitude, city.location.longitude, city.location.zoom]);
 
 
-  return (
-    <section
-      className='cities__map map'
-      ref={mapRef}
-    />
-  );
-};
+  return (<section className={`${className} map `} ref={mapContainerRef} />);
+}
 
-export { Map };
+export default Map;

@@ -1,38 +1,48 @@
-import leaflet, { Map as LefletMap } from 'leaflet';
-import { useState, useEffect, useRef} from 'react';
-import { MapRefType, TILE_LAYER_URL_PATTERN, TILE_LAYER_ATTRIBUTION } from '../components/const';
-// import { CITIES } from '../mocks/city';
+import { useEffect, useRef, useState } from 'react';
+import leaflet, { Map as LeafletMap } from 'leaflet';
 
-const useMap = ({mapRef, city}: MapRefType): LefletMap | null => {
-  const [map, setMap] = useState <LefletMap | null>(null);
+type TUseMap = {
+  location: {
+    latitude: number;
+    longitude: number;
+    zoom: number;
+  };
+  containerRef: React.RefObject<HTMLElement | null>;
+};
+
+const TILE_LAYER_URL_PATTERN = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const TILE_LAYER_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+function useMap({ location, containerRef }: TUseMap): LeafletMap | null {
   const isRenderedRef = useRef(false);
+  const [map, setMap] = useState<LeafletMap | null>(null);
 
-  useEffect(() => {
-    if (mapRef.current !== null && !isRenderedRef.current && city) {
-      const instance = leaflet.map(mapRef.current, {
+  useEffect(() : void => {
+
+    if(containerRef.current !== null && !isRenderedRef.current) {
+      // указываем внутри какого элемента находится карта и создаем ее центр
+      const instance = leaflet.map(containerRef.current, {
         center: {
-          lat: city.location.latitude,
-          lng: city.location.longitude,
+          lat: location.latitude,
+          lng: location.longitude,
         },
-        zoom: city.location.zoom,
+        zoom: location.zoom,
       });
 
       leaflet
-        .tileLayer(
-          TILE_LAYER_URL_PATTERN,
-          {
-            attribution: TILE_LAYER_ATTRIBUTION,
-          },
-        )
+        .tileLayer(TILE_LAYER_URL_PATTERN, {
+          attribution: TILE_LAYER_ATTRIBUTION,
+        })
         .addTo(instance);
 
       setMap(instance);
       isRenderedRef.current = true;
+
     }
-  }, [mapRef, city]);
+
+  }, [location.latitude, location.longitude, location.zoom, containerRef]);
 
   return map;
+}
 
-};
-
-export { useMap };
+export default useMap;

@@ -1,149 +1,49 @@
-// export const NumberOfOffers = {
-//   offers: 312,
-// };
 
-export const enum AppRoute {
-  Main = '/',
-  Login = '/login',
-  Favorites = '/favorites',
-  Offer = '/offer/:'
-}
-
-export enum AuthorizationStatus {
+export enum AutorizationStatus {
   Auth = 'AUTH',
   NoAuth = 'NO_AUTH',
   Unknown = 'UNKNOWN',
 }
 
-export enum CityList {
-  Paris = 'Paris',
-  Cologne = 'Cologne',
-  Brussels = 'Brussels',
-  Amsterdam = 'Amsterdam',
-  Hamburg = 'Hamburg',
-  Dusseldorf = 'Dusseldorf',
+export enum AppRoute {
+  Main = '/',
+  Login = '/login',
+  Favorites = '/favorites',
+  Offer = '/offers',
+  Comments = '/comments'
 }
 
-export type CityLocationType = {
-  latitude: number;
-  longitude: number;
-  zoom: number;
-};
-
-export interface CityType {
-  name: string;
-  location: CityLocationType;
+// эта часть добавляется к адресу сервера, чтобы по этому маршруту найти данные
+export enum APIRoute {
+  Offers = '/offers',
+  Login = '/login',
+  Logout = '/logout',
+  Favorites = '/favorite',
+  Comments = '/comments',
 }
 
-export interface CityWithIdType extends CityType {
-  id: string;
+export enum RequestStatus {
+  Failed = 'failed',
+  Success = 'success',
+  Loading = 'loading',
+  Idle = 'idle', // начальное состояние, когда запрос еще ни разу не выполнялся
 }
 
-export type OfferType = {
-  id: string;
-  title: string;
-  type: 'apartment' | 'house' | 'room' | 'hotel';
-  price: number;
-  city: CityType;
-  location: CityLocationType;
-  isFavorite: boolean;
-  isPremium: boolean;
-  rating: number;
-  previewImage: UrlType;
-};
+const publicUrl = import .meta.env.BASE_URL;
 
-export type OffersType = { offers: OfferType[]};
+export const DEFAULT_CITY_NAME = 'Paris';
 
-type HostType = {
-  name: string;
-  avatarUrl: UrlType;
-  isPro: boolean;
-};
+export const URL_MARKER_DEFAULT = `${publicUrl}img/pin.svg`;
+export const URL_MARKER_ACTIVE = `${publicUrl}img/pin-active.svg`;
 
-export type UrlType = string;
+export const SortType = {
+  Popular: 'popular',
+  PriceLowToHigh: 'price-low-to-high',
+  PriceHighToLow: 'price-high-to-low',
+  TopRated: 'top-rated',
+} as const;
 
-type GoodType = 'Wifi'| 'Heating'| 'Kitchen'| 'Fridge' | 'Washing machine' | 'Coffee machine' | 'Dishwasher' | 'Towels' | 'Baby seat' | 'Cabel TV';
 
-type GoodsType = GoodType[];
-
-export type ImagesType = UrlType[];
-
-export type OfferDetailedType = {
-  id: string;
-  title: string;
-  type: 'apartment' | 'house' | 'room' | 'hotel';
-  price: number;
-  city: CityType;
-  location: CityLocationType;
-  isFavorite: boolean;
-  isPremium: boolean;
-  rating: number;
-  previewImage: UrlType;
-  description: string;
-  bedrooms: number;
-  goods: GoodsType;
-  host: HostType;
-  images: ImagesType;
-  maxAdults: number;
-
-};
-
-export type FavoriteDataType = {
-  id: number;
-  cityName: string;
-  favorites: OfferType[];
-}
-
-export type UserType = {
-  name: string;
-  avatarUrl: UrlType;
-  isPro: boolean;
-};
-
-export type Review = {
-  id: string;
-  date: string;
-  user: UserType;
-  comment: string;
-  rating: number;
-};
-
-export type Reviews = Review[];
-
-export type GoodIdType = {
-  id: string;
-  good: string;
-}
-
-export type ImageIdType = {
-  id: string;
-  picture: UrlType;
-}
-
-export const URL_MARKER_DEFAULT = 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg';
-export const URL_MARKER_CURRENT = 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/main-pin.svg';
-
-export const URL_MARKER_CURRENT_LOCAL = '../../img/pin-active.svg';
-export const TILE_LAYER_URL_PATTERN = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-export const TILE_LAYER_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
-
-export type MapCityType_ = {
-  title: string;
-  lat: number;
-  lng: number;
-  zoom: number;
-};
-
-export type MapCityType = {
-  id: string;
-  location: {latitude: number; longitude: number; zoom: number};
-  name: string;
-}
-
-export type MapRefType = {
-  mapRef: React.RefObject<HTMLElement>;
-  // city: CityWithIdType;
-  city: CityWithIdType | undefined;
-};
-
-export const DEFAULT_CITY = 'Amsterdam';
+export const ALL_CITIES_NAMES : string[] = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Humburg','Dusseldorf'] as const;
+export const MAX_COMMENTS = 10;
+export const MIN_COMMENT_LENGTH = 50;

@@ -1,19 +1,35 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
+import App from './components/app/app';
+import React from 'react';
+
+// import { offers } from './mocks/offers'; // все предложения по всем городам, т.е. то, что хранит store
+// import { AutorizationStatus } from './components/const';
+// import { reviews } from './mocks/reviews';
+// import { TCity } from './components/tconst';
 import { Provider } from 'react-redux';
-import { App } from './components/app/app';
-// import { offers } from './mocks/offers_';
-import { store } from './store/index';
+import { store } from './store';
+import { checkAuth } from './store/user/user-thunk';
+
+// import { TOffer } from './components/tconst';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+// const authorizationStatus = AutorizationStatus.Auth;
+// TODO: изменить получение списка всех городов allCities, когда подключится асинхрон
+// ToDo: тут надо добавить загрузку предложений из хранилища
+// проверка статуса аутентификации
+store.dispatch(checkAuth());
 
 root.render(
   <React.StrictMode>
     <Provider store={store}>
+      {/* <App userEmail={email} favoritesCount={favoritesCount} places={[...offers]} /> */}
       <App />
     </Provider>
+
   </React.StrictMode>
+
+
 );

@@ -1,55 +1,66 @@
-import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import { Main } from '../../pages/main/main.tsx';
-import { Favorites } from '../../pages/favorites/favorites.tsx';
-import { AppRoute, AuthorizationStatus } from '../const.ts';
-import { PrivateRoute } from '../private-route/private-route.tsx';
-import { Error } from '../../pages/error/error.tsx';
-import { Login } from '../../pages/login/login.tsx';
+import Login from '../../pages/login-screen/login';
+import PrivateRoute from '../private-route/private-route';
+import Favorites from '../../pages/favorites-screen/favorites-screen';
+import NotFound from '../not-found/notFound';
+import MainScreen from '../../pages/main-screen/main-screen';
+import OfferScreen from '../../pages/offer-screen/offer-screen';
+
 import { HelmetProvider } from 'react-helmet-async';
-// import { OffersType } from '../const.ts';
-import { offersDetailed } from '../../mocks/offers-detailed.ts';
-import { Offer } from '../../pages/offer/offer.tsx';
+import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import { AppRoute, AutorizationStatus } from '../const';
+import { useAppSelector,} from '../../store/hooks';
+import { selectAuthorizationStatus } from '../../store/user/user-slice';
+import { useEffect } from 'react';
+import Spinner from '../spinner/spinner';
+import { getToken } from '../../services/token';
+import { checkAuth } from '../../store/user/user-thunk';
 
 
-// const App = ({offers}:OffersType): JSX.Element => (
-const App = (): JSX.Element => (
+function App(): JSX.Element {
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const token = getToken();
 
-  <HelmetProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path={AppRoute.Main}
-          element={<Main />}
-        />
-        <Route
-          path={AppRoute.Login}
-          element={<Login />}
-        />
-        <Route
-          path={AppRoute.Favorites}
-          element={
+  // проверяем есть ли токен. Если есть, то логинимся
+  useEffect(() => {
+    if(token) {
+      checkAuth();
+    }
+  }, [token]);
 
-            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
-              <Favorites />
+  if (authorizationStatus === AutorizationStatus.Unknown) {
+    return <Spinner />;
+  }
+
+  return (
+    <HelmetProvider>
+      <BrowserRouter>
+        <Routes>
+
+          <Route path={AppRoute.Main} element={<MainScreen />}/>
+          <Route path={AppRoute.Login} element={
+            // onlyUnAuth={true}
+            <PrivateRoute onlyUnAuth>
+              <Login />
             </PrivateRoute>
           }
-        />
-        <Route
-          path={`${AppRoute.Offer}id`}
-          element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth} >
-              <Offer offers={offersDetailed} />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="*"
-          element={<Error />}
-        />
-      </Routes>
-    </BrowserRouter>
-  </HelmetProvider>
-);
+          />
+
+          <Route path={AppRoute.Favorites}
+            element={
+              <PrivateRoute >
+                <Favorites />
+              </PrivateRoute>
+            }
+          />
 
 
-export {App};
+          <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen />} />
+          <Route path='*' element={<NotFound type={'page'}/>} />
+
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
+  );
+}
+
+export default App;

@@ -17,7 +17,7 @@ function FavoriteCard({ offer }: { offer: TOffer }) {
   const handleСlick = useFavoriteClick();
 
   const premium = offer.isPremium && (
-    <div className="place-card__mark">
+    <div className='place-card__mark'>
       <span>Premium</span>
     </div>
   );
@@ -101,7 +101,7 @@ function FavoriteCity({ cityFavorites }: { cityFavorites: TFavoritesByCity }): J
 function Favorites(): JSX.Element {
   const { fetchFavorites } = useActionCreators(favoritesActions);
   const favorites = useSelector(selectFavoritesByCityName);
-  const { fetchAllOffers} = useActionCreators(offersActions);
+  const { fetchAllOffers } = useActionCreators(offersActions);
   const status = useAppSelector(selectRequestStatus);
 
 
@@ -115,8 +115,8 @@ function Favorites(): JSX.Element {
     return <Spinner />; // или null
   }
 
-  if(status === RequestStatus.Failed) {
-    return <NotFound type='other'/>;
+  if (status === RequestStatus.Failed) {
+    return <NotFound type='other' />;
   }
 
   return (

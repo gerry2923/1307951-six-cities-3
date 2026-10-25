@@ -2,7 +2,6 @@ import { TUrl } from '../components/types';
 
 export type TReview = {
   id: string;
-  offerId: string;
   date: string;
   user: {
     name: string;
@@ -14,6 +13,24 @@ export type TReview = {
 }
 
 export type TReviews = TReview[];
+
+
+export type TReviewWithId = {
+  id: string;
+  offerId: string;
+  date: string;
+  user: {
+    name: string;
+    avatarUrl: TUrl;
+    isPro: boolean;
+  };
+  comment: string;
+  rating: number;
+}
+
+export type TReviewWithIds = TReviewWithId[];
+
+
 /*
 const reviwes: TReviews = [
   {
@@ -172,7 +189,7 @@ const reviwes: TReviews = [
   }
 ];
 */
-export const reviewsOffer: TReviews = [
+export const reviewsOffer: TReviewWithIds = [
   // Комментарии для предложения id: '1'
   {
     id: 'c1f8a3b2-5d9e-4c7a-9f2b-1e5d3a8c4b6f',

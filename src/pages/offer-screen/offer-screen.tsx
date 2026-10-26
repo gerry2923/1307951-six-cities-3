@@ -18,6 +18,7 @@ import { favoritesActions } from '../../store/favorites/favorites-slice';
 import { selectFavoritePendingIds } from '../../store/favorites/favorites-selectors';
 import { selectNearbyOffersWithFavorites, selectOfferWithFavorites } from '../../store/offer/offer-selectors';
 import { selectSortedCommentsByDate } from '../../store/comments/comments-selectors';
+import { selectActiveOfferId, uiActions } from '../../store/ui/ui-slice';
 
 
 function Insides({ offer }: { offer: TOffer }) {
@@ -86,6 +87,8 @@ function OfferScreen(): JSX.Element {
   const currentOffer = useAppSelector(selectOfferWithFavorites);
   const nearbyOffers = useAppSelector(selectNearbyOffersWithFavorites);
   const status = useAppSelector(offerSelectors.offerStatus);
+  const activeOfferId = useAppSelector(selectActiveOfferId);
+  const { setActiveOfferId } = useActionCreators(uiActions);
   const isAuth = useAuth();
 
   const comments = useAppSelector(selectSortedCommentsByDate);
@@ -93,15 +96,23 @@ function OfferScreen(): JSX.Element {
 
   const handleClick = useFavoriteClick();
 
+  const handleActiveOfferChange = (offer: TOffer | null): void => {
+    setActiveOfferId(offer?.id ?? null);
+  };
+
   useEffect(() => {
     if (!id) {
       return;
     }
 
     clearComments();
-    fetchOffer(id);
-    fetchNearBy(id);
-    fetchComments(id);
+
+    Promise.all(
+      [
+        fetchOffer(id),
+        fetchNearBy(id),
+        fetchComments(id)
+      ]);
 
     return () => {
       clear();
@@ -131,11 +142,9 @@ function OfferScreen(): JSX.Element {
   }
 
   const isPending = Boolean(pendingIds[id]);
-  const nearbyOffersForMap = [currentOffer, ...nearbyOffers.slice(0, 3)];
-  const rating = `${(currentOffer.rating * 100) / 5}%`;
-
-  const favorite = currentOffer.isFavorite ?
-    'offer__bookmark-button--active' : '';
+  // const nearbyOffersForMap = [currentOffer, ...nearbyOffers.slice(0, 3)];
+  const nearbyOffersForMap = [currentOffer, ...nearbyOffers];
+  const rating = `${(Math.round(currentOffer.rating) * 100) / 5}%`;
 
   const handleFavoriteClick = () => {
     if(isPending) {
@@ -167,7 +176,7 @@ function OfferScreen(): JSX.Element {
                   {currentOffer.title}
                 </h1>
                 <button
-                  className={`offer__bookmark-button button ${favorite}`}
+                  className={`offer__bookmark-button button ${currentOffer.isFavorite ? 'offer__bookmark-button--active' : ''}`}
                   type="button"
                   onClick={handleFavoriteClick}
                   disabled={isPending}
@@ -183,7 +192,7 @@ function OfferScreen(): JSX.Element {
                   <span style={{ width: rating }} />
                   <span className="visually-hidden">Rating</span>
                 </div>
-                <span className="offer__rating-value rating__value">rating</span>
+                <span className="offer__rating-value rating__value">{currentOffer.rating}</span>
               </div>
               <ul className="offer__features">
                 <li className="offer__feature offer__feature--entire">{currentOffer.type}</li>
@@ -207,7 +216,7 @@ function OfferScreen(): JSX.Element {
               <div className="offer__host">
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
-                  <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
+                  <div className={`offer__avatar-wrapper ${currentOffer.host.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
                     <img
                       className="offer__avatar user__avatar"
                       src={currentOffer.host.avatarUrl}
@@ -241,8 +250,9 @@ function OfferScreen(): JSX.Element {
           <Map
             city={currentOffer.city}
             offers={nearbyOffersForMap}
-            activeOfferId={id}
+            activeOfferId={activeOfferId}
             className={'offer__map'}
+            isFirstActive
           />
         </section>
 
@@ -251,7 +261,10 @@ function OfferScreen(): JSX.Element {
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
 
             <div className="near-places__list places__list">
-              <OfferList offers={nearbyOffers} />
+              <OfferList
+                offers={nearbyOffers}
+                onActiveOfferChange={handleActiveOfferChange}
+              />
             </div>
           </section>
         </div>

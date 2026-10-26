@@ -47,7 +47,7 @@ function CommentForm() {
       .catch((err) => {/* обработать ошибку */
         // эта err находится в postComment
         console.error(err);
-        setReview(INITIAL_FORM_STATE);
+        // setReview(INITIAL_FORM_STATE);
       })
       .finally(()=> {
         setIsSubmitting(false);

@@ -24,13 +24,17 @@ type TMap = {
   offers: TOffer[];
   activeOfferId?: string | null;
   className: string;
+  isFirstActive?: boolean;
 }
 
 
-function Map({ city, offers, activeOfferId, className }: TMap): JSX.Element {
+function Map({ city, offers, activeOfferId, className, isFirstActive = false }: TMap): JSX.Element {
   // в эту ссылку запихиваем элемент - контейнер, в котором мы применяем ref (см ниже)
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const markersRef = useRef<leaflet.Marker[]>([]);
+  if (isFirstActive) {
+    activeOfferId = activeOfferId ?? offers[0].id;
+  }
 
   // создаем хук, который создает новый экземпляр карты
   const map = useMap(

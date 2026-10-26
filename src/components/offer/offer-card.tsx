@@ -37,7 +37,7 @@ function OfferCard({ offer, onOfferHover }: TOfferCard) {
     handleClick(offer.id, offer.isFavorite);
   };
 
-  const rating = `${(offer.rating * 100 / 5).toString()}%`;
+  const rating = `${(Math.round(offer.rating) * 100 / 5).toString()}%`;
 
   const premium = offer.isPremium && (
     <div className="place-card__mark">
@@ -91,7 +91,7 @@ function OfferCard({ offer, onOfferHover }: TOfferCard) {
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={route}>{offer.city.name}</Link>
+          <Link to={route}>{offer.title}</Link>
         </h2>
         <p className="place-card__type">{offer.type}</p>
       </div>

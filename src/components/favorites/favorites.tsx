@@ -99,17 +99,18 @@ function FavoriteCity({ cityFavorites }: { cityFavorites: TFavoritesByCity }): J
 }
 
 function Favorites(): JSX.Element {
-  const { fetchFavorites } = useActionCreators(favoritesActions);
   const favorites = useSelector(selectFavoritesByCityName);
   const { fetchAllOffers } = useActionCreators(offersActions);
   const status = useAppSelector(selectRequestStatus);
 
+  // useEffect(() => {
 
+  //   Promise.all([fetchAllOffers(), fetchFavorites()]);
+  // }, [fetchAllOffers, fetchFavorites]);
   useEffect(() => {
-
     fetchAllOffers();
-    fetchFavorites();
-  }, [fetchAllOffers, fetchFavorites]);
+  }, [fetchAllOffers]);
+
 
   if (status === RequestStatus.Loading) {
     return <Spinner />; // или null

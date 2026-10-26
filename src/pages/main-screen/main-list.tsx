@@ -65,7 +65,7 @@ export function MainList(): JSX.Element {
       <section className='cities__places places'>
         <h2 className='visually-hidden'>Places</h2>
         <b className='places__found'>
-          {sortedOffersLength} places to stay in {activeCity}
+          {`${sortedOffersLength} ${sortedOffersLength === 1 ? 'place' : 'places'} to stay in ${activeCity}`}
         </b>
 
         <Sorting sortType={sortType} onSortChange={handleSortChange} />

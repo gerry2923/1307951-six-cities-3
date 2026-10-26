@@ -4,7 +4,7 @@ import { TOffer } from '../types';
 import { selectFavoritesByCityName } from '../../store/favorites/favorites-selectors';
 import { useEffect } from 'react';
 import { useActionCreators, useAppSelector } from '../../store/hooks';
-import { favoritesActions, selectRequestStatus } from '../../store/favorites/favorites-slice';
+import { selectRequestStatus } from '../../store/favorites/favorites-slice';
 import Spinner from '../spinner/spinner';
 import { offersActions } from '../../store/offers/offers-slice';
 import { useFavoriteClick } from '../../hooks/use-favorite-click';

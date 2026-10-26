@@ -3,33 +3,35 @@ import { useActionCreators } from '../../store/hooks';
 import { commentsThunks } from '../../store/comments/comments-thunk';
 import { useParams } from 'react-router-dom';
 import { MIN_COMMENT_LENGTH } from '../const';
+import React from 'react';
+import { toast } from 'react-toastify';
 
 const rating = [
-  {value: 5, label: 'perfect'},
-  {value: 4, label: 'good'},
-  {value: 3, label: 'not bad'},
-  {value: 2, label: 'badly'},
-  {value: 1, label: 'terribly'},
+  { value: 5, label: 'perfect' },
+  { value: 4, label: 'good' },
+  { value: 3, label: 'not bad' },
+  { value: 2, label: 'badly' },
+  { value: 1, label: 'terribly' },
 ];
 
-const INITIAL_FORM_STATE = {rating: 0, review: ''};
+const INITIAL_FORM_STATE = { rating: 0, review: '' };
 
 type TFeedbackChangeHandler = ReactEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 
 
 function CommentForm() {
 
-  const {id} = useParams();
+  const { id } = useParams();
   const [review, setReview] = useState(INITIAL_FORM_STATE);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { postComment } = useActionCreators(commentsThunks);
 
-  const handleFeedbackChange : TFeedbackChangeHandler = (event) => {
-    const {name, value} = event.currentTarget;
-    setReview({...review, [name]: name === 'rating' ? Number(value) : value});
+  const handleFeedbackChange: TFeedbackChangeHandler = (event) => {
+    const { name, value } = event.currentTarget;
+    setReview({ ...review, [name]: name === 'rating' ? Number(value) : value });
   };
 
-  const handleFormSubmit:FormEventHandler<HTMLFormElement> = (event) => {
+  const handleFormSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     if (!id || isSubmitting) {
       return;
@@ -39,17 +41,22 @@ function CommentForm() {
     postComment({
       body: {
         comment: review.review,
-        rating: review.rating },
+        rating: review.rating
+      },
       offerId: id,
     })
       .unwrap()
       .then(() => setReview(INITIAL_FORM_STATE))
       .catch((err) => {/* обработать ошибку */
-        // эта err находится в postComment
-        console.error(err);
-        // setReview(INITIAL_FORM_STATE);
+      // эта err находится в postComment
+        const message =
+          typeof err === 'string'
+            ? err
+            : (err as { message?: string })?.message
+            ?? 'Не удалось отправить комментарий';
+        toast.error(message);
       })
-      .finally(()=> {
+      .finally(() => {
         setIsSubmitting(false);
       });
   };
@@ -65,7 +72,7 @@ function CommentForm() {
         Your review
       </label>
       <div className='reviews__rating-form form__rating'>
-        {rating.map(({value, label}) => (
+        {rating.map(({ value, label }) => (
           <Fragment key={value}>
             <input
               className='form__rating-input visually-hidden'
@@ -119,4 +126,5 @@ function CommentForm() {
   );
 }
 
-export default CommentForm;
+
+export default React.memo(CommentForm);

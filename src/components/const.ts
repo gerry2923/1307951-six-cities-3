@@ -13,7 +13,6 @@ export enum AppRoute {
   Comments = '/comments'
 }
 
-// эта часть добавляется к адресу сервера, чтобы по этому маршруту найти данные
 export enum APIRoute {
   Offers = '/offers',
   Login = '/login',
@@ -26,7 +25,7 @@ export enum RequestStatus {
   Failed = 'failed',
   Success = 'success',
   Loading = 'loading',
-  Idle = 'idle', // начальное состояние, когда запрос еще ни разу не выполнялся
+  Idle = 'idle',
 }
 
 const publicUrl = import .meta.env.BASE_URL;

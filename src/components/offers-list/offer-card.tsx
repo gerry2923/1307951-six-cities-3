@@ -4,6 +4,7 @@ import { AppRoute } from '../const';
 import { useFavoriteClick } from '../../hooks/use-favorite-click';
 import { selectFavoritePendingIds } from '../../store/favorites/favorites-selectors';
 import { useAppSelector } from '../../store/hooks';
+import React from 'react';
 
 
 type TOfferCard = {
@@ -11,7 +12,6 @@ type TOfferCard = {
   onOfferHover?: (offer: TOffer | null) => void;
 }
 
-// маленькая карточка на главной странице
 function OfferCard({ offer, onOfferHover }: TOfferCard) {
 
   const handleClick = useFavoriteClick();
@@ -20,16 +20,14 @@ function OfferCard({ offer, onOfferHover }: TOfferCard) {
 
   const route = `${AppRoute.Offer}/${offer.id}`;
 
-  //  наведение мышки по карточке и отведение --> приводит к изменению ActiveOfferId и подсвечиванию накарте
   const handleMouseOver = () => {
-    // передаем оффер этой карты
     onOfferHover?.(offer);
   };
 
   const handleMouseLeave = () => {
     onOfferHover?.(null);
   };
-  // вот этот обработчик кликов
+
   const handleFavoriteClick = () => {
     if(isPending) {
       return;
@@ -96,10 +94,8 @@ function OfferCard({ offer, onOfferHover }: TOfferCard) {
         <p className="place-card__type">{offer.type}</p>
       </div>
     </article>
-
-
   );
 }
 
 
-export default OfferCard;
+export default React.memo(OfferCard);

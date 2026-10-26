@@ -1,10 +1,10 @@
-import { Fragment, useEffect } from 'react';
+import { Fragment, useCallback, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/header/header';
 import { TOffer } from '../../components/types';
 import Map from '../../components/map/map';
-import OfferList from '../../components/offer/offer-list';
+import OfferList from '../../components/offers-list/offers-list';
 import { useActionCreators, useAppSelector, useAuth } from '../../store/hooks';
 import { offerActions, offerSelectors } from '../../store/offer/offer-slice';
 import Spinner from '../../components/spinner/spinner';
@@ -19,65 +19,10 @@ import { selectFavoritePendingIds } from '../../store/favorites/favorites-select
 import { selectNearbyOffersWithFavorites, selectOfferWithFavorites } from '../../store/offer/offer-selectors';
 import { selectSortedCommentsByDate } from '../../store/comments/comments-selectors';
 import { selectActiveOfferId, uiActions } from '../../store/ui/ui-slice';
+import OfferImages from './offer-images';
+import Insides from './insides';
 
 
-function Insides({ offer }: { offer: TOffer }) {
-
-  if (!offer?.goods || offer.goods?.length === 0) {
-    return null;
-  }
-
-  const insides = offer.goods.map((good, index) => ({
-    id: index,
-    goodItem: good,
-  }));
-
-  return (
-    <>
-      {
-        insides.map((good) => (<li className="offer__inside-item" key={good.id}>{good.goodItem}</li>))
-      }
-    </>
-  );
-}
-
-function OfferImage({ imageUrl }: { imageUrl: string }) {
-  return (
-    <div className="offer__image-wrapper">
-      <img className="offer__image" src={imageUrl} alt="Photo studio" />
-    </div>
-  );
-}
-
-function OfferImages({ offer }: { offer: TOffer | null }) {
-  if (!offer?.images || offer.images.length === 0) {
-    return null;
-  }
-
-  let images = offer.images.map((imageUrl, index) => ({
-    id: index,
-    url: imageUrl,
-  })
-  );
-
-  if (images.length > 6) {
-    images = images.slice(0, 6);
-  }
-
-  return (
-    <>
-      {
-        images.map((image) => (
-          <OfferImage key={image.id} imageUrl={image.url} />
-        ))
-      }
-    </>
-  );
-}
-
-
-// отрисуй offer
-// смотрим, авторизированный пользователь или нет + проверяем по id есть ли такое предложение или нет
 function OfferScreen(): JSX.Element {
   const { id } = useParams();
   const { fetchOffer, fetchNearBy, clear } = useActionCreators(offerActions);
@@ -96,9 +41,9 @@ function OfferScreen(): JSX.Element {
 
   const handleClick = useFavoriteClick();
 
-  const handleActiveOfferChange = (offer: TOffer | null): void => {
+  const handleActiveOfferChange = useCallback((offer: TOffer | null): void => {
     setActiveOfferId(offer?.id ?? null);
-  };
+  }, [setActiveOfferId]);
 
   useEffect(() => {
     if (!id) {
@@ -142,7 +87,6 @@ function OfferScreen(): JSX.Element {
   }
 
   const isPending = Boolean(pendingIds[id]);
-  // const nearbyOffersForMap = [currentOffer, ...nearbyOffers.slice(0, 3)];
   const nearbyOffersForMap = [currentOffer, ...nearbyOffers];
   const rating = `${(Math.round(currentOffer.rating) * 100) / 5}%`;
 
@@ -269,7 +213,6 @@ function OfferScreen(): JSX.Element {
           </section>
         </div>
       </main>
-
 
     </Fragment>
 

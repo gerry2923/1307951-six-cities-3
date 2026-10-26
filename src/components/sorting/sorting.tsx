@@ -2,16 +2,6 @@ import { SortType } from '../const';
 import { TSortType } from '../types';
 import { useEffect, useState, useRef } from 'react';
 
-// popular | 'price-low-to-high' | 'price-high-to-low' | 'top-rated'
-// export type TSortType = typeof SortType[keyof typeof SortType];
-
-// export const SortType = {
-//   Popular: 'popular',
-//   PriceLowToHigh: 'price-low-to-high',
-//   PriceHighToLow: 'price-high-to-low',
-//   TopRated: 'top-rated',
-// } as const;
-
 type TSortingOption = {
   sortType: TSortType;
   onSortChange: (option: TSortType) => void;
@@ -37,15 +27,10 @@ function SortingOption({sortType, onSortChange} : TSortingOption):JSX.Element {
     }
 
     const handleDocClick = (evt: MouseEvent): void => {
-      // if (!(evt.target instanceof Node)) {
       if (!(evt.target instanceof HTMLElement)) {
         return;
       }
-      // в rootRef сохраняем контейнер всего элемента
-      // если клик будет за пределами этого контейрена, то
-      // список будет сворачиваться
       if(!rootRef.current?.contains(evt.target)) {
-      // if (!evt.target.closest('.places__sorting')) {
         setIsSortListOpen(false);
       }
     };
@@ -63,7 +48,6 @@ function SortingOption({sortType, onSortChange} : TSortingOption):JSX.Element {
       document.removeEventListener('keydown', handleEscClick);
     };
   }, [isSortListOpen]);
-
 
   const handleSelect = (type: TSortType): void => {
     onSortChange(type);

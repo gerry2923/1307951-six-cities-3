@@ -3,19 +3,12 @@ import { selectActiveCity, selectSortType } from '../ui/ui-slice';
 import { SortType } from '../../components/const';
 import { selectOffersWithFavorites } from '../favorites/favorites-selectors';
 
-
-// возвращает массив предложений
-// export const selectOffersByCity = createSelector(
-//   [selectAllOffers, selectActiveCity],
-//   (offers, city) => offers.filter((offer) => offer.city.name === city)
-// );
-
 export const selectOffersByCity = createSelector(
   [selectOffersWithFavorites, selectActiveCity],
   (offers, city) => offers.filter((offer) => offer.city.name === city)
 );
 
-// возвращает объект TCity для карты
+
 export const selectActiveCityLocation = createSelector(
   [selectOffersByCity],
   (offers) => offers[0]?.city

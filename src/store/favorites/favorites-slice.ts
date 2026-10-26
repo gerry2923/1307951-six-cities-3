@@ -5,12 +5,11 @@ import { changeFavoriteStatus, favoritesThunks, fetchFavorites} from './favorite
 import { logout } from '../user/user-thunk';
 import { RootState } from '..';
 
-// будем сохранять не целый массив предложений, а только их id
+
 export interface FavoritesState {
   favoriteIds: OfferId[];
   status: RequestStatus;
   error: string | null;
-  // чтобы блокировать кнопку, пока летит мутация
   pendingIds: Record<OfferId, true>;
 }
 
@@ -45,11 +44,9 @@ export const favoritesSlice = createSlice({
       })
       .addCase(fetchFavorites.rejected, (state: FavoritesState,) => {
         state.status = RequestStatus.Failed;
-        // state.error = action.payload ?? 'Ошибочка';
       })
 
       .addCase(changeFavoriteStatus.pending, (state: FavoritesState, action) => {
-        // это нужно, чтобы заблокировать кнопку
         state.pendingIds[action.meta.arg.offerId] = true;
 
       })
@@ -71,7 +68,6 @@ export const favoritesSlice = createSlice({
       .addCase(changeFavoriteStatus.rejected, (state, action) => {
 
         delete state.pendingIds[action.meta.arg.offerId];
-        // state.error = action.payload ?? 'Ошибка';
         state.error = 'error';
 
       })
@@ -89,6 +85,4 @@ export const favoritesActions = {
 };
 
 export const selectRequestStatus = (state: RootState) => state.favorites.status;
-
-
 export default favoritesSlice.reducer;

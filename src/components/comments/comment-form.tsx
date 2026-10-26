@@ -47,8 +47,7 @@ function CommentForm() {
     })
       .unwrap()
       .then(() => setReview(INITIAL_FORM_STATE))
-      .catch((err) => {/* обработать ошибку */
-      // эта err находится в postComment
+      .catch((err) => {
         const message =
           typeof err === 'string'
             ? err

@@ -42,7 +42,6 @@ export type OfferType = 'apartment' | 'house' | 'room' | 'hotel';
 export type TOffer = {
   id: string;
   title: string;
-  // type: 'apartment' | 'house' | 'room' | 'hotel';
   type: OfferType;
   price: number;
   previewImage: TUrl;

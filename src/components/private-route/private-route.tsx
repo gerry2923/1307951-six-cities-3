@@ -13,10 +13,7 @@ type FromState = {
 }
 
 function PrivateRoute({ children, onlyUnAuth = false }: TPrivateRoute) {
-  // объект, который описывает текущий url. у него есть несклько полей
-  // сохраняет знчение только в текущей вкладке
   const location: Location<FromState> = useLocation() as Location<FromState>;
-
   const user = useAppSelector(selectUser);
 
   if(onlyUnAuth && user) {
@@ -28,13 +25,7 @@ function PrivateRoute({ children, onlyUnAuth = false }: TPrivateRoute) {
     return <Navigate state={{from: location}} to={AppRoute.Login} />;
   }
 
-
   return children;
-  // return (
-  //   authorizationStatus === AutorizationStatus.Auth ?
-  //     children :
-  //     <Navigate to={AppRoute.Login} />
-  // );
 }
 
 export default PrivateRoute;

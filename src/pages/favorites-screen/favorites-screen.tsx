@@ -26,13 +26,19 @@ function FavoritesScreen(): JSX.Element {
         </title>
       </Helmet>
 
-      <Header />
-      {
-        numberOfFavorites ?
-          <Favorites /> :
-          <FavoritesEmpty />
-      }
-      <Footer />
+      <div className={`page ${numberOfFavorites ? '' : 'page--favorites-empty'}`}>
+
+        <Header />
+        {
+          numberOfFavorites ?
+            <Favorites /> :
+            <FavoritesEmpty />
+        }
+
+        <Footer />
+      </div>
+
+
     </>
   );
 }

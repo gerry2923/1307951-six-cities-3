@@ -11,15 +11,11 @@ import { MainEmpty } from './main-empty';
 import { selectOffersLoading } from '../../store/offers/offers-slice';
 import { selectSortedOffersLength } from '../../store/offers/offers-selectors';
 
-// TODO: добавить обработку ошибок (нет загрузки, нет предложений)
-// TODO: если нет предложений в списке, вывести No Places To stay available
-
 function MainScreen(): JSX.Element {
 
-  const activeCity = useAppSelector(selectActiveCity); // для принятия cityName/string
+  const activeCity = useAppSelector(selectActiveCity);
   const isLoading = useAppSelector(selectOffersLoading);
-  const sortedOffersLength = useAppSelector(selectSortedOffersLength); // для принятия number
-
+  const sortedOffersLength = useAppSelector(selectSortedOffersLength);
 
   return (
     <div className="page page--gray page--main">

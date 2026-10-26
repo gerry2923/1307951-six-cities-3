@@ -24,15 +24,24 @@ type TMap = {
   offers: TOffer[];
   activeOfferId?: string | null;
   className: string;
+  isFirstActive?: boolean;
 }
 
 
-function Map({ city, offers, activeOfferId, className }: TMap): JSX.Element {
-  // в эту ссылку запихиваем элемент - контейнер, в котором мы применяем ref (см ниже)
+function Map({
+  city,
+  offers,
+  activeOfferId,
+  className,
+  isFirstActive = false
+}: TMap): JSX.Element {
+
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const markersRef = useRef<leaflet.Marker[]>([]);
+  if (isFirstActive) {
+    activeOfferId = activeOfferId ?? offers[0].id;
+  }
 
-  // создаем хук, который создает новый экземпляр карты
   const map = useMap(
     {
       location: city?.location ?? null,
@@ -44,11 +53,9 @@ function Map({ city, offers, activeOfferId, className }: TMap): JSX.Element {
       return undefined;
     }
 
-    // 1) удалить старые маркеры
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
 
-    // 2) создать новые и СОХРАНИТЬ их
     markersRef.current = offers.map((offer) =>
       leaflet
         .marker(
@@ -60,7 +67,6 @@ function Map({ city, offers, activeOfferId, className }: TMap): JSX.Element {
         .addTo(map)
     );
 
-    // 3) очистка при размонтировании/пересоздании
     return () => {
       markersRef.current.forEach((marker) => marker.remove());
       markersRef.current = [];

@@ -9,11 +9,10 @@ export enum AppRoute {
   Main = '/',
   Login = '/login',
   Favorites = '/favorites',
-  Offer = '/offers',
+  Offer = '/offer',
   Comments = '/comments'
 }
 
-// эта часть добавляется к адресу сервера, чтобы по этому маршруту найти данные
 export enum APIRoute {
   Offers = '/offers',
   Login = '/login',
@@ -26,7 +25,7 @@ export enum RequestStatus {
   Failed = 'failed',
   Success = 'success',
   Loading = 'loading',
-  Idle = 'idle', // начальное состояние, когда запрос еще ни разу не выполнялся
+  Idle = 'idle',
 }
 
 const publicUrl = import .meta.env.BASE_URL;
@@ -44,6 +43,13 @@ export const SortType = {
 } as const;
 
 
-export const ALL_CITIES_NAMES : readonly string[] = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Humburg','Dusseldorf'] as const;
+export const ALL_CITIES_NAMES : readonly string[] = [
+  'Paris',
+  'Cologne',
+  'Brussels',
+  'Amsterdam',
+  'Hamburg',
+  'Dusseldorf'] as const;
+
 export const MAX_COMMENTS = 10;
 export const MIN_COMMENT_LENGTH = 50;

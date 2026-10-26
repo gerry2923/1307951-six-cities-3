@@ -27,7 +27,7 @@ function NotFound({type}: TNotFoundProps) :JSX.Element {
         fontWeight: 'bold',
         textAlign: 'center',
       }}
-      >{`4${variants[type].o}4.`}<br />
+      >{` 404 -> 4${variants[type].o}4.`}<br />
         <small style={{
           margin: '0 auto',
         }}

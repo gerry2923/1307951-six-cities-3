@@ -10,10 +10,9 @@ import { selectAuthorizationStatus } from './user/user-slice';
 import { AutorizationStatus } from '../components/const';
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
-// typeduseselectorhook - не нужно писать (state: RootState)
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-// типы для useActionCreators
+
 type BoundActions<Actions extends ActionCreatorsMapObject> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key in keyof Actions]: Actions[key] extends AsyncThunk<any, any, any>
@@ -25,7 +24,6 @@ type BoundAsyncThunk<Action extends ActionCreator<any>> = (
   ...args: Parameters<Action>
 ) => ReturnType<ReturnType<Action>>;
 
-// хук для создания объекта с синхронными и асинхронными действиями вместе, не по отдельности
 
 export const useActionCreators = <Actions extends ActionCreatorsMapObject>(actions: Actions): BoundActions<Actions> => {
   const dispatch = useAppDispatch();

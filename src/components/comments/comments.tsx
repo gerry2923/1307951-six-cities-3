@@ -6,7 +6,6 @@ type TComments = {
   comments: TComment[];
 }
 
-
 function Comments({comments}: TComments): JSX.Element {
   const visibleComments = comments.slice(0, MAX_COMMENTS);
 

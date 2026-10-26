@@ -20,7 +20,6 @@ function useMap({ location, containerRef }: TUseMap): LeafletMap | null {
   useEffect(() : void => {
 
     if(containerRef.current !== null && !isRenderedRef.current) {
-      // указываем внутри какого элемента находится карта и создаем ее центр
       const instance = leaflet.map(containerRef.current, {
         center: {
           lat: location.latitude,

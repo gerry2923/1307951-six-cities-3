@@ -9,14 +9,12 @@ export interface UserState {
   user: TUser | null;
   authorizationStatus: AutorizationStatus;
   requestStatus: RequestStatus;
-  // error: string | null;
 }
 
 const initialState: UserState = {
   user: null,
   authorizationStatus: AutorizationStatus.Unknown,
   requestStatus: RequestStatus.Idle,
-  // error: null,
 };
 
 function processLoading(state: UserState){
@@ -72,7 +70,6 @@ export const userSlice = createSlice({
 
 });
 
-// export const { setStatus, setUser } = userSlice.actions;
 export const userActions = {...userSlice.actions, checkAuth, login, logout};
 export const selectAuthorizationStatus = (state: RootState) => state.user.authorizationStatus;
 export const selectUser = (state: RootState) => state.user.user;

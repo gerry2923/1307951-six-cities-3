@@ -15,6 +15,8 @@ import Spinner from '../spinner/spinner';
 import { getToken } from '../../services/token';
 import { checkAuth } from '../../store/user/user-thunk';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector(selectAuthorizationStatus);
@@ -59,8 +61,21 @@ function App(): JSX.Element {
 
         </Routes>
       </BrowserRouter>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
+
     </HelmetProvider>
   );
 }
+
 
 export default App;

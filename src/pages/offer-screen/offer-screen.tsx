@@ -1,10 +1,10 @@
-import { Fragment, useEffect } from 'react';
+import { Fragment, useCallback, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/header/header';
 import { TOffer } from '../../components/types';
 import Map from '../../components/map/map';
-import OfferList from '../../components/offer/offer-list';
+import OfferList from '../../components/offers-list/offers-list';
 import { useActionCreators, useAppSelector, useAuth } from '../../store/hooks';
 import { offerActions, offerSelectors } from '../../store/offer/offer-slice';
 import Spinner from '../../components/spinner/spinner';
@@ -18,65 +18,11 @@ import { favoritesActions } from '../../store/favorites/favorites-slice';
 import { selectFavoritePendingIds } from '../../store/favorites/favorites-selectors';
 import { selectNearbyOffersWithFavorites, selectOfferWithFavorites } from '../../store/offer/offer-selectors';
 import { selectSortedCommentsByDate } from '../../store/comments/comments-selectors';
+import { selectActiveOfferId, uiActions } from '../../store/ui/ui-slice';
+import OfferImages from './offer-images';
+import Insides from './insides';
 
 
-function Insides({ offer }: { offer: TOffer }) {
-
-  if (!offer?.goods || offer.goods?.length === 0) {
-    return null;
-  }
-
-  const insides = offer.goods.map((good, index) => ({
-    id: index,
-    goodItem: good,
-  }));
-
-  return (
-    <>
-      {
-        insides.map((good) => (<li className="offer__inside-item" key={good.id}>{good.goodItem}</li>))
-      }
-    </>
-  );
-}
-
-function OfferImage({ imageUrl }: { imageUrl: string }) {
-  return (
-    <div className="offer__image-wrapper">
-      <img className="offer__image" src={imageUrl} alt="Photo studio" />
-    </div>
-  );
-}
-
-function OfferImages({ offer }: { offer: TOffer | null }) {
-  if (!offer?.images || offer.images.length === 0) {
-    return null;
-  }
-
-  let images = offer.images.map((imageUrl, index) => ({
-    id: index,
-    url: imageUrl,
-  })
-  );
-
-  if (images.length > 6) {
-    images = images.slice(0, 6);
-  }
-
-  return (
-    <>
-      {
-        images.map((image) => (
-          <OfferImage key={image.id} imageUrl={image.url} />
-        ))
-      }
-    </>
-  );
-}
-
-
-// отрисуй offer
-// смотрим, авторизированный пользователь или нет + проверяем по id есть ли такое предложение или нет
 function OfferScreen(): JSX.Element {
   const { id } = useParams();
   const { fetchOffer, fetchNearBy, clear } = useActionCreators(offerActions);
@@ -86,6 +32,8 @@ function OfferScreen(): JSX.Element {
   const currentOffer = useAppSelector(selectOfferWithFavorites);
   const nearbyOffers = useAppSelector(selectNearbyOffersWithFavorites);
   const status = useAppSelector(offerSelectors.offerStatus);
+  const activeOfferId = useAppSelector(selectActiveOfferId);
+  const { setActiveOfferId } = useActionCreators(uiActions);
   const isAuth = useAuth();
 
   const comments = useAppSelector(selectSortedCommentsByDate);
@@ -93,15 +41,23 @@ function OfferScreen(): JSX.Element {
 
   const handleClick = useFavoriteClick();
 
+  const handleActiveOfferChange = useCallback((offer: TOffer | null): void => {
+    setActiveOfferId(offer?.id ?? null);
+  }, [setActiveOfferId]);
+
   useEffect(() => {
     if (!id) {
       return;
     }
 
     clearComments();
-    fetchOffer(id);
-    fetchNearBy(id);
-    fetchComments(id);
+
+    Promise.all(
+      [
+        fetchOffer(id),
+        fetchNearBy(id),
+        fetchComments(id)
+      ]);
 
     return () => {
       clear();
@@ -131,11 +87,8 @@ function OfferScreen(): JSX.Element {
   }
 
   const isPending = Boolean(pendingIds[id]);
-  const nearbyOffersForMap = [currentOffer, ...nearbyOffers.slice(0, 3)];
-  const rating = `${(currentOffer.rating * 100) / 5}%`;
-
-  const favorite = currentOffer.isFavorite ?
-    'offer__bookmark-button--active' : '';
+  const nearbyOffersForMap = [currentOffer, ...nearbyOffers];
+  const rating = `${(Math.round(currentOffer.rating) * 100) / 5}%`;
 
   const handleFavoriteClick = () => {
     if(isPending) {
@@ -167,7 +120,7 @@ function OfferScreen(): JSX.Element {
                   {currentOffer.title}
                 </h1>
                 <button
-                  className={`offer__bookmark-button button ${favorite}`}
+                  className={`offer__bookmark-button button ${currentOffer.isFavorite ? 'offer__bookmark-button--active' : ''}`}
                   type="button"
                   onClick={handleFavoriteClick}
                   disabled={isPending}
@@ -183,7 +136,7 @@ function OfferScreen(): JSX.Element {
                   <span style={{ width: rating }} />
                   <span className="visually-hidden">Rating</span>
                 </div>
-                <span className="offer__rating-value rating__value">rating</span>
+                <span className="offer__rating-value rating__value">{currentOffer.rating}</span>
               </div>
               <ul className="offer__features">
                 <li className="offer__feature offer__feature--entire">{currentOffer.type}</li>
@@ -207,7 +160,7 @@ function OfferScreen(): JSX.Element {
               <div className="offer__host">
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
-                  <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
+                  <div className={`offer__avatar-wrapper ${currentOffer.host.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
                     <img
                       className="offer__avatar user__avatar"
                       src={currentOffer.host.avatarUrl}
@@ -241,8 +194,9 @@ function OfferScreen(): JSX.Element {
           <Map
             city={currentOffer.city}
             offers={nearbyOffersForMap}
-            activeOfferId={id}
+            activeOfferId={activeOfferId}
             className={'offer__map'}
+            isFirstActive
           />
         </section>
 
@@ -251,12 +205,14 @@ function OfferScreen(): JSX.Element {
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
 
             <div className="near-places__list places__list">
-              <OfferList offers={nearbyOffers} />
+              <OfferList
+                offers={nearbyOffers}
+                onActiveOfferChange={handleActiveOfferChange}
+              />
             </div>
           </section>
         </div>
       </main>
-
 
     </Fragment>
 

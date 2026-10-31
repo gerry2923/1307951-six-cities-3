@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { TSortType } from '../../components/types';
-import { RootState } from '..';
+
 import { DEFAULT_CITY_NAME, SortType } from '../../components/const';
 
 export type TCityOffersState = {
@@ -44,7 +44,5 @@ export const uiSlice = createSlice({
 
 
 export const uiActions = {...uiSlice.actions};
-export const selectActiveCity = (state: RootState) => state.ui.activeCity;
-export const selectSortType = (state: RootState) => state.ui.sortType;
-export const selectActiveOfferId = (state: RootState) => state.ui.activeOfferId;
+
 export default uiSlice.reducer;

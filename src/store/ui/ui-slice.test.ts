@@ -5,8 +5,8 @@ describe('Ui Slice', () => {
   it('should return initial state with empty action', () => {
     const emptyAction = { type: '' };
     const expectedState = {
-      activeCity: 'Cologne',
-      sortType: SortType.PriceHighToLow,
+      activeCity: DEFAULT_CITY_NAME,
+      sortType: SortType.Popular,
       activeOfferId: null,
     };
 
@@ -22,7 +22,7 @@ describe('Ui Slice', () => {
       activeOfferId: null,
     };
 
-    const result = uiSlice.reducer(expectedState, emptyAction);
+    const result = uiSlice.reducer(undefined, emptyAction);
     expect(result).toEqual(expectedState);
   });
 

@@ -25,7 +25,7 @@ export const favoritesSlice = createSlice({
   name: 'favorites',
   initialState,
   reducers: {
-    favoritesCleared: (state) => {
+    favoritesClear: (state) => {
       state.favorites = [];
       state.status = RequestStatus.Idle;
       state.error = null;
@@ -44,6 +44,7 @@ export const favoritesSlice = createSlice({
       })
       .addCase(fetchFavorites.rejected, (state: FavoritesState,) => {
         state.status = RequestStatus.Failed;
+        state.error = 'ошибка загрузки';
       })
 
       .addCase(changeFavoriteStatus.pending, (state: FavoritesState, action) => {

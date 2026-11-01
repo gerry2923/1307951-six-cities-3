@@ -127,5 +127,4 @@ describe('Comments Slice', () => {
     expect(result).toEqual(expectedState);
   });
 
-
 });

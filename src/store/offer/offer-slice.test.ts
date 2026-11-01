@@ -1,4 +1,5 @@
 import { RequestStatus } from '../../components/const';
+import { makeFakeOffer } from '../../utils/mocks';
 import { offerActions, offerSlice } from './offer-slice';
 
 describe('Offer Slice', () => {
@@ -44,4 +45,53 @@ describe('Offer Slice', () => {
     expect(result).toEqual(expectedState);
 
   });
+
+  it('should switch to Loading and reset the error on fetchOffers.pending', () => {
+
+    const expectedState = {
+      info: null,
+      nearby: [],
+      status: RequestStatus.Loading,
+    };
+
+    const result = offerSlice.reducer(undefined, offerActions.fetchOffer.pending);
+
+    expect(result).toEqual(expectedState);
+  });
+
+  it('should put the payload into offers and switch to Success on fetchOffers.fulfilled', () => {
+    const fakeOffer = makeFakeOffer();
+    const expectedState = {
+      info: fakeOffer,
+      nearby: [],
+      status: RequestStatus.Success,
+    };
+
+    const result = offerSlice.reducer(
+      undefined,
+      offerActions.fetchOffer.fulfilled(
+        fakeOffer,
+        'test-request-id',
+        '',
+      )
+    );
+
+    expect(result).toEqual(expectedState);
+  });
+
+  it('should switch to Failed when fetchOffers.rejected', () => {
+    const expectedState = {
+      info: null,
+      nearby: [],
+      status: RequestStatus.Failed
+    };
+
+    const result = offerSlice.reducer(
+      undefined,
+      offerActions.fetchOffer.rejected,
+    );
+
+    expect(result).toEqual(expectedState);
+  });
+
 });

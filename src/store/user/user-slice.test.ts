@@ -15,7 +15,7 @@ describe('User Slice', () => {
     expect(result).toEqual(expectedState);
   });
 
-  it('should return default initial state with ', () => {
+  it('should return default initial state', () => {
     const emptyAction = { type: '' };
     const expectedState = {
       user: null,
@@ -27,21 +27,16 @@ describe('User Slice', () => {
     expect(result).toEqual(expectedState);
   });
 
-  it('should return new authorization status by "setStatus"', () => {
-    const initialState = {
-      user: null,
-      authorizationStatus: AutorizationStatus.Unknown,
-      requestStatus: RequestStatus.Idle,
-    };
+
+  it('should set loading on requestStatus when checkAuth.pending', () => {
 
     const expectedState = {
       user: null,
-      authorizationStatus: AutorizationStatus.Auth,
-      requestStatus: RequestStatus.Idle,
+      authorizationStatus: AutorizationStatus.Unknown,
+      requestStatus: RequestStatus.Loading,
     };
 
-    const result = userSlice.reducer(initialState, userActions.setStatus(AutorizationStatus.Auth));
-
+    const result = userSlice.reducer(undefined, userActions.checkAuth.pending);
     expect(result).toEqual(expectedState);
   });
 

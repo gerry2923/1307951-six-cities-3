@@ -10,7 +10,6 @@ export type TCityOffersState = {
   activeOfferId: string | null;
 }
 
-
 const initialState: TCityOffersState = {
   activeCity: DEFAULT_CITY_NAME,
   sortType: SortType.Popular,

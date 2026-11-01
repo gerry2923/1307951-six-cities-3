@@ -23,7 +23,7 @@ describe('Async actions', () => {
   });
 
   describe('Comment thunk Acync Action', () => {
-    it('sould dispatch "fetchComments.pending" and "fetchComments.fulfilled"',
+    it('sould dispatch "fetchComments.pending" and "fetchComments.fulfilled", when server response 200',
       async () => {
         mockAxiosAdapter.onGet(`${APIRoute.Comments}/offer-id`).reply(200);
         await store.dispatch(fetchComments('offer-id'));

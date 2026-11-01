@@ -63,6 +63,7 @@ export const favoritesSlice = createSlice({
           state.favorites.splice(idx, 1);
         }
       })
+
       .addCase(changeFavoriteStatus.rejected, (state, action) => {
 
         delete state.pendingIds[action.meta.arg.offerId];

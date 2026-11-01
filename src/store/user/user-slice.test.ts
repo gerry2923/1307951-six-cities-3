@@ -1,5 +1,5 @@
 import { AutorizationStatus, RequestStatus } from '../../components/const';
-import { userSlice } from './user-slice';
+import { userActions, userSlice } from './user-slice';
 
 describe('User Slice', () => {
 
@@ -15,7 +15,7 @@ describe('User Slice', () => {
     expect(result).toEqual(expectedState);
   });
 
-  it('should return default initial state with ', () => {
+  it('should return default initial state', () => {
     const emptyAction = { type: '' };
     const expectedState = {
       user: null,
@@ -24,6 +24,19 @@ describe('User Slice', () => {
     };
 
     const result = userSlice.reducer(undefined, emptyAction);
+    expect(result).toEqual(expectedState);
+  });
+
+
+  it('should set loading on requestStatus when checkAuth.pending', () => {
+
+    const expectedState = {
+      user: null,
+      authorizationStatus: AutorizationStatus.Unknown,
+      requestStatus: RequestStatus.Loading,
+    };
+
+    const result = userSlice.reducer(undefined, userActions.checkAuth.pending);
     expect(result).toEqual(expectedState);
   });
 

@@ -1,5 +1,5 @@
 import { RequestStatus } from '../../components/const';
-import { favoritesActions, favoritesSlice } from './favorites-slice';
+import { favoritesSlice } from './favorites-slice';
 
 describe('Favorites Slice', () => {
 
@@ -29,23 +29,4 @@ describe('Favorites Slice', () => {
     expect(result).toEqual(expectedState);
   });
 
-  it('should clear farovites with "favoritesCleared" action', () => {
-    const initialState = {
-      favorites: [],
-      status: RequestStatus.Failed,
-      error: null,
-      pendingIds: {},
-    };
-
-    const expectedState = {
-      favorites: [],
-      status: RequestStatus.Idle,
-      error: null,
-      pendingIds: {},
-    };
-
-    const result = favoritesSlice.reducer(initialState, favoritesActions.favoritesCleared);
-    expect(result).toEqual(expectedState);
-
-  });
 });

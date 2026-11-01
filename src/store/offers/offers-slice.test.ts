@@ -93,7 +93,6 @@ describe('Offer Slice', () => {
         undefined,
       ),
     );
-
     expect(result.isLoading).toBe(false);
   });
 });

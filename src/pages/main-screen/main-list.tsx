@@ -55,11 +55,11 @@ export function MainList(): JSX.Element {
 
   const handleActiveOfferChange = useCallback((offer: TOffer | null): void => {
     setActiveOfferId(offer?.id ?? null);
-  }, []);
+  }, [setActiveOfferId]);
 
   const handleSortChange = useCallback((option: TSortType): void => {
     setSortType(option);
-  },[]);
+  },[setSortType]);
 
   if (isLoading) {
     return (<Spinner />);

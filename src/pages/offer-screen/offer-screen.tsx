@@ -13,7 +13,6 @@ import { commentsActions } from '../../store/comments/comments-slice';
 import CommentForm from '../../components/comments/comment-form';
 import Comments from '../../components/comments/comments';
 import { useFavoriteClick } from '../../hooks/use-favorite-click';
-import { favoritesActions } from '../../store/favorites/favorites-slice';
 import { selectFavoritePendingIds } from '../../store/favorites/favorites-selectors';
 import { selectNearbyOffersWithFavorites, selectOfferWithFavorites } from '../../store/offer/offer-selectors';
 import { selectSortedCommentsByDate } from '../../store/comments/comments-selectors';
@@ -26,7 +25,6 @@ function OfferScreen(): JSX.Element {
   const { id } = useParams();
   const { fetchOffer, fetchNearBy, clear } = useActionCreators(offerActions);
   const { fetchComments, clearComments } = useActionCreators(commentsActions);
-  const { fetchFavorites } = useActionCreators(favoritesActions);
 
   const currentOffer = useAppSelector(selectOfferWithFavorites);
   const nearbyOffers = useAppSelector(selectNearbyOffersWithFavorites);
@@ -57,12 +55,6 @@ function OfferScreen(): JSX.Element {
       clear();
     };
   }, [fetchOffer, fetchNearBy, id, clear, fetchComments, clearComments]);
-
-  useEffect(() => {
-    if (isAuth) {
-      fetchFavorites();
-    }
-  }, [isAuth, fetchFavorites]);
 
   if (!id) {
     return <NotFound type={'page'} />;
